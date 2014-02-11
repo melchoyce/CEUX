@@ -15,3 +15,5 @@ Prototyping repository for the WordPress CEUX project.
 - Use `the_content` filter to get Content Blocks templates and **build the content** to be printed on Front End.
 - **Retrieve content structure** on Post Edit. 
 - Improve UI.
+- Replace `.less` files for `.scss` files.
+- Update readme.txt.
