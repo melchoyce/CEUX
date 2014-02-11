@@ -1,0 +1,19 @@
+ul.block-list {
+	overflow: hidden;
+}
+
+#content-block-groups ul.block-list li {
+	float: left; width: 54px; height: 54px; padding: 10px; margin: 1px; background: #f5f5f5; cursor: pointer;
+}
+
+#content-block-groups .wp-tab-panel {
+	max-height: 500px;
+}
+
+.content-block-modal {
+	display: none;
+}
+
+.content-block-modal .content-block-modal-inner {
+	padding: 20px;
+}
