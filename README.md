@@ -5,7 +5,7 @@ Prototyping repository for the WordPress CEUX project.
 
 ###Todo
 
-- **Handle Plupload** files to insert the content in the corresponding Content Block.
+- ~~**Handle Plupload** files to insert the content in the corresponding Content Block.~~
 - Configure **Gallery** based on Image Content Block.
 - insert oEmbed feature in **Audio / Video** Content Blocks. 
 - **Create initial documentation** for insert custom content Blocks.
