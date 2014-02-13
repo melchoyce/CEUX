@@ -21,7 +21,7 @@ class WP_Content_Blocks {
 	public $name = '';
 	
 	protected static $instance = null;
-	protected $plugin_slug = 'wp-content-blocks-v2';
+	protected $plugin_slug = 'wp-content-blocks';
 	protected $plugin_dir = null;
 
 	// get instance of plugin
@@ -53,6 +53,7 @@ class WP_Content_Blocks {
 		// returns the content-blocks collection via ajax
 		add_action( 'wp_ajax_get_content_blocks', array( $this, 'get_content_blocks_coll') );
 		add_action( 'wp_ajax_get_cb_button_tpl', array( $this, 'blocks_button_tpl') );
+		add_action( 'wp_ajax_ceux_upload_image', array( $this, 'cb_upload_image') );
 
 	}
 
@@ -348,7 +349,7 @@ class WP_Content_Blocks {
 
 			// Additional parameters:
 			'multipart_params'    => array(
-				'_ajax_nonce' => wp_create_nonce( 'photo-upload' ),
+				'_ajax_nonce' => wp_create_nonce( 'img-upload' ),
 				'action'      => 'ceux_upload_image',
 				'postID'	  => $post->ID
 			),
@@ -359,7 +360,73 @@ class WP_Content_Blocks {
 
 	}
 
+	/**
+	 * File upload handler.
+	 */
+	function cb_upload_image(){
 
+
+		// Check referer, die if no ajax:
+		check_ajax_referer( 'img-upload' );
+
+		/// Upload file using Wordpress functions:
+		$file = $_FILES['ceux-upload'];
+
+		$status = wp_handle_upload( $file, array(
+			'test_form' => true,
+			'action' => 'ceux_upload_image'
+		) );
+
+		// Fetch post ID:
+		$post_id = $_POST['postID'];
+
+		// Insert uploaded file as attachment:
+		$attach_id = wp_insert_attachment( array(
+			'post_mime_type' => $status['type'],
+			'post_title' => preg_replace( '/\.[^.]+$/', '', basename( $file['name'] ) ),
+			'post_content' => '',
+			'post_status' => 'inherit'
+		), $status['file'], $post_id );
+
+		// Include the image handler library:
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
+
+		// Generate meta data and update attachment:
+		$attach_data = wp_generate_attachment_metadata( $attach_id, $status['file'] );
+		wp_update_attachment_metadata( $attach_id, $attach_data );
+
+		// get meta data of the generated attachment
+		$data = wp_get_attachment_metadata( $attach_id );
+
+		// build our custom array for JSON response
+		$response = array(
+			'id' => $post_id,
+			'sizes' => array()
+		);
+
+		foreach ( $data['sizes'] as $key => $size ) {
+
+			$url = wp_get_attachment_image_src( $attach_id, $key );
+
+			$response['sizes'][ $key ] = array(
+				'width' => $size['width'],
+				'height' => $size['height'],
+				'url' => $url[0]
+			);
+		}
+
+		// set full size
+		$full_url = wp_get_attachment_image_src( $attach_id, 'full' );
+		
+		$response['sizes']['full'] = array(
+			'width' => $data['width'],
+			'height' => $data['height'],
+			'url' => $full_url[0]
+		);
+
+		// Return response and exit:
+		wp_send_json( $response );
+	}
 }
 
 global $wp_content_blocks;

@@ -37,6 +37,7 @@
         };
 
         this.$settings = _.extend( {}, this.get( 'defaults' ), this.objects );
+        this.response = {};
 
         // sets dinamically the uploader ids and merge with the current options
         // get a new instance of Plupload
@@ -77,6 +78,12 @@
         up.start();
         up.refresh();
       },
+      getAttatchment: function(){
+        console.log( this.response );
+        console.log( this.get('response') );
+        console.log( self.response );
+        console.log( self.get('response') );
+      }
     })
 
     // CONTENT BLOCKS CONTAINER ====================================================================================//
@@ -362,10 +369,8 @@
       },
       init: function(){
         // object to get the image sizes
-        if( this.model.get('type') == 'wp-image' ){
-          this.imgSizes = {};
-        }
-
+        this.imgSizes = {};
+        this.blockType = this.model.get( 'type' );
       },
       onRender: function(){
 
@@ -380,15 +385,16 @@
           drop_element: 'wp-drag-drop-' + $id,
           defaults: ceux_plupload 
         });
+
+        this.upl.instance.bind( 'FilesAdded', _.bind( this.filesAdded, this ) );
+        this.upl.instance.bind( 'FileUploaded', _.bind( this.fileUploaded, this ) );
+        this.upl.instance.bind( 'UploadProgress', _.bind( this.uploaderProgress, this ) );
         
       },
       mediaModal: function(e){
         e.preventDefault();
 
         var self = this;
-        this.blockType = this.model.get( 'type' );
-
-        var placeholder = self.$el.find( $( '.' + this.blockType ) );
 
         //If the frame already exists, reopen it
         if ( typeof( file_modal ) !== "undefined" ) {
@@ -417,16 +423,6 @@
           file_modal.on( 'select', function() {
             var attachment = file_modal.state().get( 'selection' ).first().toJSON();
             
-            attachment.getURL = function(el){
-              // loop through the sizes of the thumb
-              for ( var property in attachment.sizes ) {
-                  if ( attachment.sizes.hasOwnProperty( property ) ) {
-                      self.imgSizes[property] = attachment.sizes[property].url; 
-                  }
-              }
-               return self.imgSizes[el];
-            }
-
             // console.log(attachment.getURL('thumbnail'));
              //do something with attachment variable, for example attachment.filename
              //Object:
@@ -452,19 +448,57 @@
              //attachment.url - http url of image, for example "http://site.com/wp-content/uploads/2012/12/my-image.jpg"
              //attachment.width
 
-             var imgTemplate = _.template( $('#image-placeholder' ).html() );
-             var imgID = 'wp-image-' + attachment.id;
-
-             // placeholder.html('<div id="' + imgID + '"><img id="' + imgID + '"src="' + attachment.url + '" class="size-full"></div>');
-             placeholder.html( imgTemplate({
-               id: imgID,
-               url: attachment.getURL( 'full' )
-             }) );
+            // insert image
+            self.setImg( attachment );            
           });
-   
         }
         //Open modal
         file_modal.open();
+      },
+      filesAdded: function(){
+
+        this.$bar = $('<div class="upload-bg"><div class="upload-bar"><div class="upload-percent"></div><div><p class="upload-label"></p></div>');
+        this.$el.find( $( '.' + this.blockType ) ).append( this.$bar );
+
+      },
+      uploaderProgress: function( up, file ){
+        // set progress bar width
+        this.$bar.find('.upload-percent').css('width', up.total.percent +'%' );
+        this.$bar.find('.upload-label').html( 'Uploading ' + file.name );
+
+      },
+      fileUploaded: function( up, file, response ){
+        console.log( 'FileUploaded' );
+        this.Img = $.parseJSON( response.response ); 
+
+        this.setImg( this.Img );
+
+      },
+      setImg: function( attachment ){
+
+          var self = this,
+              imgID = 'wp-image-' + attachment.id,
+              $placeholder = this.$el.find( $( '.' + this.blockType ) ),
+              $imgTemplate = _.template( $('#image-placeholder' ).html() );
+
+          $placeholder.html( $imgTemplate({
+            id: imgID,
+            url: self.getImgURL( attachment, 'full' )
+          }) );
+
+      },
+      getImgURL: function(obj, el){
+
+        var self = this;
+        
+        // loop through the sizes of the thumb
+        for ( var property in obj.sizes ) {
+            if ( obj.sizes.hasOwnProperty( property ) ) {
+                self.imgSizes[property] = obj.sizes[property].url; 
+            }
+        }
+        
+        return self.imgSizes[el];
       },
       imgSize: function(e){
         var button = $( e.currentTarget );
