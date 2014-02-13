@@ -7,9 +7,11 @@
     display: none;
     width: 100%;
     padding: 20px;
-    background: @dark;
-    color: @light;
-    &.active{display: block;}
+    background: $dark;
+    color: $light;
+    &.active{
+		 display: block;
+	 }
 
     .arrow-up{
         position: absolute;
@@ -18,7 +20,7 @@
         display: block;
         border-left: 10px solid transparent;
         border-right: 10px solid transparent;
-        border-bottom: 10px solid @dark;
+        border-bottom: 10px solid $dark;
     }
 
     .blocks-group > div{
@@ -36,23 +38,31 @@
         text-transform: uppercase;
         text-align: center;
         cursor: pointer;
-        background: lighten(@dark,5%);
+        background: lighten($dark,5%);
         &:hover{
-            color: @blue; background: @black;
-            .block-image {color: @blue;}
+			  color: $blue;
+			  background: $black;
+            .block-image {
+					color: $blue;
+				}
         }
         .block-image{
-            color: @gray;
+            color: $gray;
             display: block;
             width: 36px;
             height: 36px;
             margin: 0 auto 10px;
-            &:before{font-size: 36px; margin: 0 auto;}
+            &:before{
+					font-size: 36px;
+					margin: 0 auto;
+				}
         }
     }
 }
 
-#defaults-container, #others-container, #search-container{
+#defaults-container,
+#others-container,
+#search-container{
     overflow: hidden;
 }
 
@@ -61,15 +71,15 @@
     padding: 3px 3px 3px 25px;
     border-radius: 25px;
     margin: 5px;
-    background: @white;
-    border: 1px solid @lightGray;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.07);
+    background: $white;
+    border: 1px solid $lightGray;
+    box-shadow: inset 0 1px 2px rgba($black, 0.07);
     
     .dashicons{
         position: absolute;
         top: 6px;
         left: 6px;
-        color: @gray;    
+        color: $gray;    
         font-size: 24px;
     }
 
