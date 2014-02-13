@@ -1,0 +1,220 @@
+/* styles for each content block */
+.wp-audio, .wp-video, .wp-image, .wp-gallery{
+
+	.block-title{
+		font-size: 1.5em !important;
+		color: $gray;
+	}
+
+	a{
+		display: block;
+		margin: 20px 0;
+		text-align: center;
+		text-decoration: none;
+		color: lighten($blue,10%);
+		outline: none;
+
+		.dashicons{
+			display: block;
+			margin: 0 auto 10px;
+			font-size: 36px;
+			width: 36px;
+			height: 36px;
+		}
+		span.label{
+			font-weight: 400;
+			margin: 0;
+		}
+	}
+
+	img.img-file{
+		display: block;
+		max-width: 100%;
+		height: auto;
+		vertical-align: top;
+	}
+	img.alignleft{
+		float: left;
+	}
+	img.aligncenter{
+		margin: 0 auto;
+	}
+	img.alignright{
+		float: right;
+	}
+	img.alignnone{
+		float: none;
+	}
+}
+
+/* wp-image controls and styles =====================*/
+.wp-image,
+.wp-gallery {
+
+	.drag-drop-area{
+		display: block;
+		width: 100%;
+		border: 2px dashed $light;
+		padding: 20px;
+		font-size: 18px;
+		text-align: center;
+
+		&.drag-over{
+			border-color: $blue;
+		}
+	}
+
+}
+
+.wp-image .img-bar{
+	position: absolute;
+	top: 20px;
+	left: 30px;
+	z-index: 100;
+	padding: 3px;
+	display: none;
+	background: $light;
+	border-radius: 2px;
+
+	ul{
+		padding: 0;
+		margin: 0;
+		list-style: none;
+	}
+
+	li{
+		display: block;
+		float: left;
+		height: 28px;
+		width: 30px;
+		padding: 0;
+		margin: 0;
+		&.opt-align,
+		&.opt-size,
+		&.remove-img{
+			padding: 2px 4px;
+			margin: 2px;
+			text-align: center;
+			color: $gray;              
+			cursor: pointer;
+			&:hover,
+			&.selected{
+				background-color: $white;
+			}
+		}
+		&.separator{
+			width: 1px;
+			height: 32px;
+			border-left: 1px solid lighten($gray,5%);
+		}
+
+		.icon-thumb:before,
+		.icon-medium:before,
+		.icon-full:before{
+			content: '\25a0';
+			width: 20px;
+			height: 20px;
+			text-align: center;
+		}
+		.icon-thumb:before{
+			font-size: 12px;
+			line-height: 30px;
+		}
+		.icon-medium:before{
+			font-size: 20px;
+			line-height: 24px;
+		}
+		.icon-full:before{
+			font-size: 30px;
+			line-height: 14px;
+		}
+	}
+
+	.dashicons{
+		width: 20px;
+		height: 20px;
+		margin: 0;
+		font-size: 20px;
+		line-height: 22px;
+	}
+}
+
+.wp-image .wp-image-placeholder{
+	width: 100%;
+	position: relative;
+	/* striped background texture */
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAANElEQVQIW2N89+7dfyEhIUYGJAASA3FRBEECMAkMSWQJkGlwnegScJ3YJMCSuCRQJLG5GABU3yNjtAVcewAAAABJRU5ErkJggg==) repeat;
+	@include clearfix;
+}
+
+
+/* Video and Audio ============================ */
+.wp-video,
+.wp-audio{
+	display: block;
+	width: 100%;
+	border: 2px dashed $light;
+	padding: 20px;
+	font-size: 18px;
+	text-align: center;
+
+	.embed-wrapper{
+		position: relative;
+		width: 100%;
+		padding-right: 100px;
+
+		.button{
+			position: absolute;
+			top: 0;
+			right: 0;
+		}
+	}
+
+	input.oembed{
+		width: 100%;
+		font-size: 16px;
+	}
+}
+
+/* quote =========================== */
+.wp-quote{
+	border: 2px dashed $light;
+	padding: 20px;
+
+	textarea{
+		width: 100%;
+		min-height: 100px;
+		border: none;
+		outline: none;
+		resize: none;
+		box-shadow: none;
+	}
+
+	.quote-who,
+	.quote-where{
+		border: none;
+		outline: none;
+		border-bottom: 1px solid $light;
+		font-size: 14px;
+		box-shadow: none;
+		&:focus{
+			box-shadow: none;
+		}
+	}
+}
+
+.wp-code {
+
+	pre{
+		margin: 0;
+		padding: 0;
+	}
+
+	code{
+		display: block;
+		outline: none;
+		padding: 10px;
+		color: $blue;
+		background: $light;
+	}
+}
