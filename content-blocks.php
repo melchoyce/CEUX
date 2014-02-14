@@ -333,7 +333,7 @@ class WP_Content_Blocks {
 			// 'drop_element'        => null,
 			'file_data_name'      => 'ceux-upload',
 			'multiple_queues'     => false,
-			'multi_selection'	  => false,
+			// 'multi_selection'	  => false,
 			'max_file_size'       => wp_max_upload_size().'b',
 			'url'                 => admin_url('admin-ajax.php'),
 			'flash_swf_url'       => includes_url('js/plupload/plupload.flash.swf'),
@@ -556,8 +556,8 @@ function cb_img_placeholder_tpl(){ ?>
 }
 
 function cb_gallery_tpl(){ ?>
-	<div class="wp-block drag-drop">
-		<div class="drag-drop-area supports-drag-drop">
+	<div class="wp-block drag-drop" id="wp-gallery-ui-<%= wp_id %>">
+		<div class="drag-drop-area supports-drag-drop" id="wp-drag-drop-<%= wp_id %>">
 			<h2 class="block-title"><?php _e( 'Add a Gallery' ); ?></h2>
 			<a href="#" class="open-modal">
 				<span class="dashicons dashicons-format-gallery"></span>

@@ -30,13 +30,14 @@
       initialize: function(){
 
         // build the object with the proper ids
-        this.objects = {
+        this.params = {
           browse_button: this.get( 'browse_button' ),
           container: this.get( 'container'),
           drop_element: this.get( 'drop_element' ),
+          multi_selectioni: this.get( 'multi_selectioni' ),
         };
 
-        this.$settings = _.extend( {}, this.get( 'defaults' ), this.objects );
+        this.$settings = _.extend( {}, this.get( 'defaults' ), this.params );
         this.response = {};
 
         // sets dinamically the uploader ids and merge with the current options
@@ -70,20 +71,14 @@
         console.log( this.instance );
       },
       filesAdded: function( up, files ){
-        console.log( 'FilesAdded' );
+        // console.log( 'FilesAdded' );
         up.start();
       },
       queueChanged: function( up, files ){
-        console.log( 'QueueChanged' );
+        // console.log( 'QueueChanged' );
         up.start();
         up.refresh();
       },
-      getAttatchment: function(){
-        console.log( this.response );
-        console.log( this.get('response') );
-        console.log( self.response );
-        console.log( self.get('response') );
-      }
     })
 
     // CONTENT BLOCKS CONTAINER ====================================================================================//
@@ -265,12 +260,17 @@
         // empty function that will be replaced for each content block
       },
 
-      onRender: function(){ 
+      beforeRender: function(){ 
+        // empty function that will be replaced for each content block
+      },
+      afterRender: function(){ 
         // empty function that will be replaced for each content block
       },
       initialize: function(){
-        this.listenTo( this.model, 'destroy', this.unrender );
+        this.beforeRender();
+        this.trigger( 'beforeRender' );
 
+        this.listenTo( this.model, 'destroy', this.unrender );
         this.template = _.template( $( this.tpl ).html() );
 
         // add events from child
@@ -285,8 +285,8 @@
 
         this.render();
 
-        this.onRender();
-        this.trigger( 'onRender' );
+        this.afterRender();
+        this.trigger( 'afterRender' );
       },
       render: function(){
 
@@ -372,9 +372,9 @@
         this.imgSizes = {};
         this.blockType = this.model.get( 'type' );
       },
-      onRender: function(){
+      afterRender: function(){
 
-        console.log( 'Plupload' );
+        // console.log( 'Plupload' );
 
         var $id = this.model.get( 'wp_id' );
  
@@ -383,6 +383,7 @@
           browse_button: 'wp-browse-button-' + $id, 
           container: 'wp-img-ui-' + $id, 
           drop_element: 'wp-drag-drop-' + $id,
+          multi_selection: false,
           defaults: ceux_plupload 
         });
 
@@ -468,7 +469,7 @@
 
       },
       fileUploaded: function( up, file, response ){
-        console.log( 'FileUploaded' );
+        // console.log( 'FileUploaded' );
         this.Img = $.parseJSON( response.response ); 
 
         this.setImg( this.Img );
@@ -545,7 +546,7 @@
         this.render();
 
         // rebuild the Plupload instance
-        this.onRender();
+        this.afterRender();
       },
       dragOver: function(e){
         e.stopPropagation();
