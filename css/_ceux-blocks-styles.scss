@@ -6,7 +6,7 @@
 		color: $gray;
 	}
 
-	a{
+	a.open-modal{
 		display: block;
 		margin: 20px 0;
 		text-align: center;
@@ -151,16 +151,22 @@
 
 .wp-gallery-controls{
 	padding: 10px;
-	font-size: 12px; 
 	background-color: $light;
 	@include clearfix;
 
-	> div { line-height: 16px; }
 	p{ margin: 0; }
 
 	.wp-gallery-link-type, .wp-gallery-columns{ float: left; }
-	.wp-gallery-columns{ margin-left: 10px; }
+	.wp-gallery-columns{ margin-left: 20px; }
+	.wp-gallery-columns input[type="number"]{ margin: 0; }
 	.wp-gallery-more{ float: right; }
+	.wp-gallery-link-type, .wp-gallery-more{ margin: 5px 0; }
+
+	.link-type, .add-more{ 
+		text-decoration: none;
+		color: $gray;
+		&:hover, &.selected{ color: $blue; }
+	}
 }
 
 // max number of columns for a gallery

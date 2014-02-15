@@ -601,6 +601,7 @@
         'click .open-modal' : 'mediaModal',
         'click .add-more' : 'mediaModal',
         'change .cols-num' : 'setColumns',
+        'click .link-type' : 'setLinkType',
         'dragover .drag-drop' : 'dragOver',
         'dragleave .drag-drop' : 'dragLeave',
         'drop .drag-drop' : 'dropUpload',
@@ -612,11 +613,14 @@
         this.galleryTpl = _.template( $( '#gallery-placeholder' ).html() );
 
         // set the number of columns in gallery
-        this.model.set({ columns: 6 });
+        this.model.set({ 
+          columns: 6,
+          link_to: 'page'
+        });
 
         this.listenTo( this.collection, 'remove reset', this.isEmptyCol );
         this.listenTo( this.model, 'change:columns', this.renderColumns );
-
+        
       },
       afterRender: function(){
 
@@ -721,7 +725,8 @@
 
         $placeholder.html( this.galleryTpl({
           wp_id: this.model.get( 'wp_id' ),
-          columns: this.model.get( 'columns' )
+          columns: this.model.get( 'columns' ),
+          link_to: this.model.get( 'link_to' ),
         }) );
 
         // initial state of sortable plugin
@@ -776,6 +781,18 @@
       renderColumns: function(){
         // change the number of columns
         $( '#wp-gallery-sort-' + this.model.get( 'wp_id' ) ).attr( 'class', 'wp-gallery-list columns-' + this.model.get( 'columns' ) );
+      },
+      setLinkType: function( e ){
+        e.preventDefault();
+        var $button = $( e.currentTarget ),
+            $buttons = this.$el.find( '.link-type' ),
+            $link_to = $button.attr( 'data-type' );
+
+        this.model.set({ link_to: $link_to });
+
+        $buttons.removeClass( 'selected' );
+        $button.addClass( 'selected' );
+
       },
       dragOver: function(e){
         e.stopPropagation();

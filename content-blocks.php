@@ -590,9 +590,9 @@ function cb_gallery_placeholder_tpl(){ ?>
 		<div class="wp-gallery-controls">
 			
 			<div class="wp-gallery-link-type">
-				<p><?php _e( 'Gallery link:' ) ?>
-				<button class="button link-type" data-type="url"><?php _e( 'Image Url' ) ?></button>
-				<button class="button link-type" data-type="page"><?php _e( 'Attachment page' ) ?></button>
+				<p><?php _e( 'Link to:' ) ?>
+				<a href="#" class="link-type<% if( link_to == 'url' ) { %> selected <% } %>" data-type="url"><span class="dashicons dashicons-admin-links"></span> <?php _e( 'Image Url' ) ?></a>
+				<a href="#" class="link-type<% if( link_to == 'page' ) { %> selected <% } %>" data-type="page"><span class="dashicons dashicons-admin-page"></span> <?php _e( 'Attachment page' ) ?></a>
 				</p>
 			</div>
 
@@ -601,7 +601,7 @@ function cb_gallery_placeholder_tpl(){ ?>
 			</div>
 
 			<div class="wp-gallery-more">
-				<button class="button button-primary add-more"><?php _e( 'Add more' ) ?></button>
+				<a href="#" class="add-more"><span class="dashicons dashicons-plus"></span> <?php _e( 'Add more' ) ?></a>
 			</div>
 
 		</div>

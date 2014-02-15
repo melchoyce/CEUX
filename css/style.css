@@ -205,20 +205,20 @@
 .wp-audio .block-title, .wp-video .block-title, .wp-image .block-title, .wp-gallery .block-title {
   font-size: 1.5em !important;
   color: #A2A2A2; }
-.wp-audio a, .wp-video a, .wp-image a, .wp-gallery a {
+.wp-audio a.open-modal, .wp-video a.open-modal, .wp-image a.open-modal, .wp-gallery a.open-modal {
   display: block;
   margin: 20px 0;
   text-align: center;
   text-decoration: none;
   color: #0099d5;
   outline: none; }
-  .wp-audio a .dashicons, .wp-video a .dashicons, .wp-image a .dashicons, .wp-gallery a .dashicons {
+  .wp-audio a.open-modal .dashicons, .wp-video a.open-modal .dashicons, .wp-image a.open-modal .dashicons, .wp-gallery a.open-modal .dashicons {
     display: block;
     margin: 0 auto 10px;
     font-size: 36px;
     width: 36px;
     height: 36px; }
-  .wp-audio a span.label, .wp-video a span.label, .wp-image a span.label, .wp-gallery a span.label {
+  .wp-audio a.open-modal span.label, .wp-video a.open-modal span.label, .wp-image a.open-modal span.label, .wp-gallery a.open-modal span.label {
     font-weight: 400;
     margin: 0; }
 .wp-audio img.img-file, .wp-video img.img-file, .wp-image img.img-file, .wp-gallery img.img-file {
@@ -314,7 +314,6 @@
 /* Gallery ==================================== */
 .wp-gallery-controls {
   padding: 10px;
-  font-size: 12px;
   background-color: #eee;
   *zoom: 1; }
   .wp-gallery-controls:before, .wp-gallery-controls:after {
@@ -322,16 +321,23 @@
     display: table; }
   .wp-gallery-controls:after {
     clear: both; }
-  .wp-gallery-controls > div {
-    line-height: 16px; }
   .wp-gallery-controls p {
     margin: 0; }
   .wp-gallery-controls .wp-gallery-link-type, .wp-gallery-controls .wp-gallery-columns {
     float: left; }
   .wp-gallery-controls .wp-gallery-columns {
-    margin-left: 10px; }
+    margin-left: 20px; }
+  .wp-gallery-controls .wp-gallery-columns input[type="number"] {
+    margin: 0; }
   .wp-gallery-controls .wp-gallery-more {
     float: right; }
+  .wp-gallery-controls .wp-gallery-link-type, .wp-gallery-controls .wp-gallery-more {
+    margin: 5px 0; }
+  .wp-gallery-controls .link-type, .wp-gallery-controls .add-more {
+    text-decoration: none;
+    color: #A2A2A2; }
+    .wp-gallery-controls .link-type:hover, .wp-gallery-controls .link-type.selected, .wp-gallery-controls .add-more:hover, .wp-gallery-controls .add-more.selected {
+      color: #0074a2; }
 
 .wp-gallery-list {
   position: relative;
