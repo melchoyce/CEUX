@@ -97,6 +97,12 @@
 	 }
 }
 
+#post-placeholder{
+    padding: 50px;
+    text-align: center;
+    h1 {color: $gray; }
+}
+
 #wp-blocks{
     position: relative;
     background: lighten($light,5%);

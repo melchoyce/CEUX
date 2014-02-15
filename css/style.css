@@ -70,6 +70,12 @@
     font-size: 30px;
     width: 30px; }
 
+#post-placeholder {
+  padding: 50px;
+  text-align: center; }
+  #post-placeholder h1 {
+    color: #A2A2A2; }
+
 #wp-blocks {
   position: relative;
   background: #fbfbfb;

@@ -345,6 +345,22 @@
       }
     });
 
+    // AUDIO CONTENT BLOCK
+    post.audioView = post.BlockView.extend({
+      tpl: '#wp-audio',
+      init: function(){
+        console.log( this.model );
+      }
+    });
+
+    // VIDEO CONTENT BLOCK
+    post.videoView = post.BlockView.extend({
+      tpl: '#wp-video',
+      init: function(){
+        console.log( this.model );
+      }
+    });
+
     // EMBED CONTENT BLOCK
     post.embedView = post.BlockView.extend({
       tpl: '#wp-embed',
@@ -620,7 +636,7 @@
 
         this.listenTo( this.collection, 'remove reset', this.isEmptyCol );
         this.listenTo( this.model, 'change:columns', this.renderColumns );
-        
+
       },
       afterRender: function(){
 
@@ -820,10 +836,16 @@
       },
 
       initialize: function(){
-        // _.bindAll(this, 'render', 'addBlock', 'blockMenu','updateTitle');
         this.container = $('#content');
         this.addBtn = $('#blocksSelect');
-        
+
+        // get the post placeholder and make a copy of it
+        this.$postPlaceholder = $( '#post-placeholder' );
+        this.$postPlaceholderCopy = this.$postPlaceholder.clone();
+
+        // check if the collection is empty
+        this.listenTo( this.collection, 'reset sync add remove', this.removePlaceholder );
+
         // counter for the views
         this.counter = 0;
 
@@ -862,6 +884,13 @@
         // // bind initial model to a new instance of BlockView
         // var initView = new post.BlockView({ model:initBlock });
         // this.$el.append( initView.render().el );
+      },
+      removePlaceholder: function(){
+        if( this.collection.length > 0 ){
+          this.$postPlaceholder.remove();
+        } else {
+          this.$el.append( this.$postPlaceholderCopy );
+        }
       },
       blockMenu: function(e){
         // prevent default behavior

@@ -275,7 +275,12 @@ class WP_Content_Blocks {
 		<div id="wp-editor-toolbar"></div>
 		<div id="wp-content-wrap" class="wp-core-ui wp-editor-wrap">
 			<div id="wp-content-editor-container" class="wp-editor-container">
-				<div id="content-blocks"></div>
+				<div id="content-blocks">
+					<div id="post-placeholder">
+						<h1><?php _e( 'Insert Content' ) ?></h1>
+						<p><?php _e( 'Click "Add Content Block" and select a Content Block to start editing your post.' ) ?></p>
+					</div>
+				</div>
 				<textarea class="wp-editor-area" style="display:none;" cols="40" name="content" id="content"><?php echo get_post_field( 'post_content', $post->ID ); ?></textarea>
 			</div>
 		</div>
