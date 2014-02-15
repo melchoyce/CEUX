@@ -154,6 +154,20 @@ class WP_Content_Blocks {
 			'view' => 'galleryView',
 		), 'cb_gallery_tpl', true );
 
+		// additional view for gallery content block
+		$wp_content_blocks_tpl[] = array( 
+			'slug' => 'gallery-placeholder', 
+			'callback' => 'cb_gallery_placeholder_tpl', 
+			'is_main' => false 
+		);
+
+		// additional subview for gallery content block
+		$wp_content_blocks_tpl[] = array( 
+			'slug' => 'gallery-img-tpl', 
+			'callback' => 'cb_gallery_img_tpl', 
+			'is_main' => false 
+		);
+
 		// Audio
 		register_content_block( array(
 			'name' => __( 'Audio' ),
@@ -400,7 +414,8 @@ class WP_Content_Blocks {
 
 		// build our custom array for JSON response
 		$response = array(
-			'id' => $post_id,
+			'id' => $attach_id,
+			'link' => get_attachment_link( $attach_id ),
 			'sizes' => array()
 		);
 
@@ -564,6 +579,40 @@ function cb_gallery_tpl(){ ?>
 				<span class="label"><?php _e( 'Drop images here or click to upload' ); ?></span>
 			</a>
 		</div>
+	</div>
+<?php
+}
+
+function cb_gallery_placeholder_tpl(){ ?>
+	<div class="wp-gallery-ui">
+		<ul id="wp-gallery-sort-<%= wp_id %>" class="wp-gallery-list columns-<%= columns %>"></ul>
+
+		<div class="wp-gallery-controls">
+			
+			<div class="wp-gallery-link-type">
+				<p><?php _e( 'Gallery link:' ) ?>
+				<button class="button link-type" data-type="url"><?php _e( 'Image Url' ) ?></button>
+				<button class="button link-type" data-type="page"><?php _e( 'Attachment page' ) ?></button>
+				</p>
+			</div>
+
+			<div class="wp-gallery-columns">
+				<p><?php _e( 'Number of Columns:' ) ?> <input type="number" name="wp-gallery-cols<%= wp_id %>" id="wp-gallery-cols<%= wp_id %>" class="cols-num" min="1" max="9" value="6"></p>
+			</div>
+
+			<div class="wp-gallery-more">
+				<button class="button button-primary add-more"><?php _e( 'Add more' ) ?></button>
+			</div>
+
+		</div>
+	</div>
+<?php
+}
+
+function cb_gallery_img_tpl(){ ?>
+	<div class="gallery-image">
+		<span class="img-remove"><span class="dashicons dashicons-no"></span></span>
+		<img src="<%= thumb.url %>" id="<%= imgID %>">		
 	</div>
 <?php
 }

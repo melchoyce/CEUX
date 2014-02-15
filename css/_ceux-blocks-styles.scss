@@ -147,6 +147,93 @@
 	@include clearfix;
 }
 
+/* Gallery ==================================== */
+
+.wp-gallery-controls{
+	padding: 10px;
+	font-size: 12px; 
+	background-color: $light;
+	@include clearfix;
+
+	> div { line-height: 16px; }
+	p{ margin: 0; }
+
+	.wp-gallery-link-type, .wp-gallery-columns{ float: left; }
+	.wp-gallery-columns{ margin-left: 10px; }
+	.wp-gallery-more{ float: right; }
+}
+
+// max number of columns for a gallery
+$max-columns: 9;
+
+.wp-gallery-list{
+	position: relative;
+	margin: 0;
+	padding: 10px;
+	border: 2px dashed $light;
+	border-bottom: none;
+	font-size: 1px;
+	@include clearfix;
+
+	// loop to generate classes for each column number
+	@for $i from 1 through $max-columns{
+		&.columns-#{$i} .wp-gallery-img, &.columns-#{$i} .gallery-img-placeholder { 
+			width: (100%/$i) - (4%/$i); 
+			margin: 10px (2%/$i);
+		}
+	}
+
+}
+
+%gallery-img{
+	float: left;
+	padding: 0 5px;
+}
+
+.gallery-img-placeholder{
+	display: block;
+	background-color: $light;
+	@extend %gallery-img;
+}
+
+.wp-gallery-img{
+	@extend %gallery-img;
+
+	.gallery-image{
+		position: relative;
+		max-width: 150px;
+		height: auto;
+		margin: 0 auto;
+		cursor: move;
+		box-shadow: 0 0 0 1px $white, 0 0 0 3px $lightGray;
+	}
+
+	img{
+		display: block;
+		width: 100%;
+		height: auto;
+		vertical-align: top;
+	}
+
+	.img-remove{
+		width: 20px;
+		height: 20px;
+		position: absolute;
+		display: none;
+		top: 5px;
+		right: 5px;
+		padding: 2px 0;
+		cursor: pointer;
+		background-color: $light;
+		border-radius: 3px;
+		box-shadow: 0 0 2px fade-out( $black, 0.5 );
+
+		.dashicons{ font-size: 14px; }
+	}
+
+	&:hover .img-remove{ display: block; }
+} 
+
 
 /* Video and Audio ============================ */
 .wp-video,
@@ -173,6 +260,45 @@
 	input.oembed{
 		width: 100%;
 		font-size: 16px;
+	}
+}
+
+/* upload feedback ====================== */
+
+.upload-bg{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: fade-out( $white, 0.1 );
+
+	.upload-bar, .upload-percent{
+		position: absolute;
+		height: 10px;
+	}
+	.upload-bar {
+		top: 50%;
+		z-index: 10;
+		margin-top: -10px;
+		width: 60%;
+		margin: 0 20%;
+		background-color: $light;
+	}
+	.upload-percent{
+		top: 0;
+		left: 0;
+		z-index: 20;
+		width: 0;
+		background-color: $blue;
+	}
+	.upload-label{
+		width: 100%;
+		position: absolute;
+		top: 50%;
+		margin-top: 10px;
+		text-align: center;
+		font-size: 12px;
 	}
 }
 

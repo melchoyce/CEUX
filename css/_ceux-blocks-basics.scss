@@ -80,7 +80,7 @@
         min-height: 50px;
         border: 2px dashed lighten($blue,10%);
     }
-    .ui-sortable-helper{
+    > .ui-sortable-helper{
         border: 2px dashed $light;
         background: $white;
         @include opacity(90);

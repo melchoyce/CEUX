@@ -1,43 +1,8 @@
 // Shortcuts for standard codes
-
-@mixin rounded-corners ($radius: 5px) {
-  -webkit-border-radius: $radius;
-  	 -moz-border-radius: $radius;
-  	  -ms-border-radius: $radius;
-  	   -o-border-radius: $radius;
-  		  border-radius: $radius;
-}
-
-@mixin box-shadow ($shadow: 1px 1px 1px #000) {
-  -webkit-box-shadow: $shadow;
-  	 -moz-box-shadow: $shadow;
-  		  box-shadow: $shadow;
-}
-@mixin text-shadow ($shadow: 1px 1px 1px #000) {
-  -webkit-text-shadow: $shadow;
-  	 -moz-text-shadow: $shadow;
-  		    text-shadow: $shadow;
-}
-
 @mixin boxsizing ($box: border-box) {
 		-webkit-box-sizing: $box;
 		   -moz-box-sizing: $box;
 				    box-sizing: $box;
-}
-@mixin transition ($trans: all .1s linear){
-  -webkit-transition: $trans;
-     -moz-transition: $trans;
-       -o-transition: $trans;
-      -ms-transition: $trans;
-          transition: $trans;
-}
-
-@mixin transform ($props){
-  -webkit-transform: $props;
-     -moz-transform: $props;
-       -o-transform: $props;
-      -ms-transform: $props;
-          transform: $props;
 }
 
 @mixin user-select (){
@@ -71,19 +36,13 @@
     background-image: linear-gradient($origin, rgba(0,0,0,0.0), rgba(0,0,0,$alpha));
 }
 
-@mixin animation ($props){
-  -webkit-animation: $props; /* Safari 4+ */
-  -moz-animation:    $props; /* Fx 5+ */
-  -o-animation:      $props; /* Opera 12+ */
-  animation:         $props; /* IE 10+ */
-}
-
 @mixin font-size ($sizeValue) {
   $remValue: $sizeValue;
   $pxValue: $sizeValue * 10;
   font-size: ($pxValue)px;
   font-size: ($remValue)rem;
 }
+
 @mixin line-height ($sizeValue) {
   $remValue: $sizeValue;
   $pxValue: $sizeValue * 10;
