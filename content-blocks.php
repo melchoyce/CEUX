@@ -275,7 +275,12 @@ class WP_Content_Blocks {
 		<div id="wp-editor-toolbar"></div>
 		<div id="wp-content-wrap" class="wp-core-ui wp-editor-wrap">
 			<div id="wp-content-editor-container" class="wp-editor-container">
-				<div id="content-blocks"></div>
+				<div id="content-blocks">
+					<div id="post-placeholder">
+						<h1><?php _e( 'Insert Content' ) ?></h1>
+						<p><?php _e( 'Click "Add Content Block" and select a Content Block to start editing your post.' ) ?></p>
+					</div>
+				</div>
 				<textarea class="wp-editor-area" style="display:none;" cols="40" name="content" id="content"><?php echo get_post_field( 'post_content', $post->ID ); ?></textarea>
 			</div>
 		</div>
@@ -590,9 +595,9 @@ function cb_gallery_placeholder_tpl(){ ?>
 		<div class="wp-gallery-controls">
 			
 			<div class="wp-gallery-link-type">
-				<p><?php _e( 'Gallery link:' ) ?>
-				<button class="button link-type" data-type="url"><?php _e( 'Image Url' ) ?></button>
-				<button class="button link-type" data-type="page"><?php _e( 'Attachment page' ) ?></button>
+				<p><?php _e( 'Link to:' ) ?>
+				<a href="#" class="link-type<% if( link_to == 'url' ) { %> selected <% } %>" data-type="url"><span class="dashicons dashicons-admin-links"></span> <?php _e( 'Image Url' ) ?></a>
+				<a href="#" class="link-type<% if( link_to == 'page' ) { %> selected <% } %>" data-type="page"><span class="dashicons dashicons-admin-page"></span> <?php _e( 'Attachment page' ) ?></a>
 				</p>
 			</div>
 
@@ -601,7 +606,7 @@ function cb_gallery_placeholder_tpl(){ ?>
 			</div>
 
 			<div class="wp-gallery-more">
-				<button class="button button-primary add-more"><?php _e( 'Add more' ) ?></button>
+				<a href="#" class="add-more"><span class="dashicons dashicons-plus"></span> <?php _e( 'Add more' ) ?></a>
 			</div>
 
 		</div>

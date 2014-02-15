@@ -345,6 +345,22 @@
       }
     });
 
+    // AUDIO CONTENT BLOCK
+    post.audioView = post.BlockView.extend({
+      tpl: '#wp-audio',
+      init: function(){
+        console.log( this.model );
+      }
+    });
+
+    // VIDEO CONTENT BLOCK
+    post.videoView = post.BlockView.extend({
+      tpl: '#wp-video',
+      init: function(){
+        console.log( this.model );
+      }
+    });
+
     // EMBED CONTENT BLOCK
     post.embedView = post.BlockView.extend({
       tpl: '#wp-embed',
@@ -601,6 +617,7 @@
         'click .open-modal' : 'mediaModal',
         'click .add-more' : 'mediaModal',
         'change .cols-num' : 'setColumns',
+        'click .link-type' : 'setLinkType',
         'dragover .drag-drop' : 'dragOver',
         'dragleave .drag-drop' : 'dragLeave',
         'drop .drag-drop' : 'dropUpload',
@@ -612,7 +629,10 @@
         this.galleryTpl = _.template( $( '#gallery-placeholder' ).html() );
 
         // set the number of columns in gallery
-        this.model.set({ columns: 6 });
+        this.model.set({ 
+          columns: 6,
+          link_to: 'page'
+        });
 
         this.listenTo( this.collection, 'remove reset', this.isEmptyCol );
         this.listenTo( this.model, 'change:columns', this.renderColumns );
@@ -721,7 +741,8 @@
 
         $placeholder.html( this.galleryTpl({
           wp_id: this.model.get( 'wp_id' ),
-          columns: this.model.get( 'columns' )
+          columns: this.model.get( 'columns' ),
+          link_to: this.model.get( 'link_to' ),
         }) );
 
         // initial state of sortable plugin
@@ -777,6 +798,18 @@
         // change the number of columns
         $( '#wp-gallery-sort-' + this.model.get( 'wp_id' ) ).attr( 'class', 'wp-gallery-list columns-' + this.model.get( 'columns' ) );
       },
+      setLinkType: function( e ){
+        e.preventDefault();
+        var $button = $( e.currentTarget ),
+            $buttons = this.$el.find( '.link-type' ),
+            $link_to = $button.attr( 'data-type' );
+
+        this.model.set({ link_to: $link_to });
+
+        $buttons.removeClass( 'selected' );
+        $button.addClass( 'selected' );
+
+      },
       dragOver: function(e){
         e.stopPropagation();
         e.preventDefault();
@@ -803,10 +836,16 @@
       },
 
       initialize: function(){
-        // _.bindAll(this, 'render', 'addBlock', 'blockMenu','updateTitle');
         this.container = $('#content');
         this.addBtn = $('#blocksSelect');
-        
+
+        // get the post placeholder and make a copy of it
+        this.$postPlaceholder = $( '#post-placeholder' );
+        this.$postPlaceholderCopy = this.$postPlaceholder.clone();
+
+        // check if the collection is empty
+        this.listenTo( this.collection, 'reset sync add remove', this.removePlaceholder );
+
         // counter for the views
         this.counter = 0;
 
@@ -845,6 +884,13 @@
         // // bind initial model to a new instance of BlockView
         // var initView = new post.BlockView({ model:initBlock });
         // this.$el.append( initView.render().el );
+      },
+      removePlaceholder: function(){
+        if( this.collection.length > 0 ){
+          this.$postPlaceholder.remove();
+        } else {
+          this.$el.append( this.$postPlaceholderCopy );
+        }
       },
       blockMenu: function(e){
         // prevent default behavior
