@@ -263,9 +263,28 @@ $max-columns: 9;
 		}
 	}
 
-	input.oembed{
+	input.oembed-url{
 		width: 100%;
 		font-size: 16px;
+	}
+}
+
+.wp-video{
+
+	// a wrapper for the video embed to keep aspect ratio (http://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php)
+	.videoWrapper {
+		position: relative;
+		width: 100%;
+		height: 0;
+		padding-bottom: 56.25%; /* 16:9 */
+		padding-top: 25px;
+	}
+	.videoWrapper iframe {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
 	}
 }
 

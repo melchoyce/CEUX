@@ -61,7 +61,7 @@
   #content-blocks > .ui-sortable-helper {
     border: 2px dashed #eee;
     background: #fff;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=${op})";
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=90)";
     filter: alpha(opacity=90);
     opacity: 0.9; }
   #content-blocks .wp-block {
@@ -441,9 +441,23 @@
       position: absolute;
       top: 0;
       right: 0; }
-  .wp-video input.oembed, .wp-audio input.oembed {
+  .wp-video input.oembed-url, .wp-audio input.oembed-url {
     width: 100%;
     font-size: 16px; }
+
+.wp-video .videoWrapper {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  /* 16:9 */
+  padding-top: 25px; }
+.wp-video .videoWrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
 
 /* upload feedback ====================== */
 .upload-bg {

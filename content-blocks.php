@@ -54,6 +54,10 @@ class WP_Content_Blocks {
 		add_action( 'wp_ajax_get_content_blocks', array( $this, 'get_content_blocks_coll') );
 		add_action( 'wp_ajax_get_cb_button_tpl', array( $this, 'blocks_button_tpl') );
 		add_action( 'wp_ajax_ceux_upload_image', array( $this, 'cb_upload_image') );
+		add_action( 'wp_ajax_fetch_cb_video', array( $this, 'cb_fetch_video') );
+		add_action( 'wp_ajax_fetch_cb_audio', array( $this, 'cb_fetch_audio') );
+
+		wp_oembed_add_provider( 'http://soundcloud.com/*', 'http://soundcloud.com/oembed' );
 
 	}
 
@@ -447,6 +451,21 @@ class WP_Content_Blocks {
 		// Return response and exit:
 		wp_send_json( $response );
 	}
+
+	// fetch video
+	function cb_fetch_video(){
+		$url = $_REQUEST['url'];
+		$response .= '<div class="videoWrapper">'. wp_oembed_get( $url, array( 'width' => 800 ) ) .'</div>';
+		die( $response );
+	}
+
+	// fetch audio
+	function cb_fetch_audio(){
+		$url = $_REQUEST['url'];
+		$response .= '<div class="audioWrapper">'. wp_oembed_get( $url ) .'</div>';
+		die( $response );
+	}
+
 }
 
 global $wp_content_blocks;
@@ -631,8 +650,8 @@ function cb_audio_tpl(){ ?>
 		<p><?php _e( 'Or, enter a video URL from your favorite audio sharing service below:' ) ?></p>
 		<p>
 		<div class="embed-wrapper">
-			<input type="text" class="oembed" value="" placeholder="Paste an audio url into here">
-			<button class="button"><?php _e( 'Fetch Audio' ); ?></button></p>
+			<input type="text" class="oembed-url" value="" placeholder="Paste an audio url into here">
+			<button class="button oembed-fetch"><?php _e( 'Fetch Audio' ); ?></button></p>
 		</div>
 	</div>
 <?php
@@ -647,8 +666,8 @@ function cb_video_tpl(){ ?>
 		<p><?php _e( 'Or, enter a video URL from your favorite video sharing service below:' ) ?></p>
 		<p>
 		<div class="embed-wrapper">
-			<input type="text" class="oembed" value="" placeholder="<?php _e( 'Paste a video url here' ) ?>">
-			<button class="button"><?php _e( 'Fetch Video' ); ?></button></p>
+			<input type="text" class="oembed-url" value="" placeholder="<?php _e( 'Paste a video url here' ) ?>">
+			<button class="button oembed-fetch"><?php _e( 'Fetch Video' ); ?></button></p>
 		</div>
 	</div>
 <?php
