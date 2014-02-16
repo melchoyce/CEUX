@@ -1,20 +1,13 @@
 (function ( $ ) {
-  "use strict";
+"use strict";
 
-  $(function () {
-  
+	$(function () {
+
     // the post namespace
     var post = post || {};
 
     // the post model - contains all the data of the post
-    post.Data = Backbone.Model.extend({
-      defaults: {
-        title: 'Your title here',
-        permalink: '',
-        content: {},
-        meta: {},
-      }
-    });
+    post.Data = Backbone.Model.extend();
 
     // get button template via ajax
     $.get( ajaxurl, { action: 'get_cb_button_tpl' } ).done( function( tpl ){
@@ -25,6 +18,7 @@
 
     });
 
+    
     // a custom object for Plupload plugin
     post.Uploader = Backbone.Model.extend({  
       initialize: function(){
@@ -80,6 +74,7 @@
         up.refresh();
       },
     })
+
 
     // CONTENT BLOCKS CONTAINER ====================================================================================//
 
@@ -226,6 +221,7 @@
     });
 
 
+
     // CONTENT BLOCKS ==============================================================================================//
     // Block default model
     post.Block = Backbone.Model.extend({
@@ -331,10 +327,12 @@
       isEditable: true
     });
 
+
     // QUOTE CONTENT BLOCK
     post.quoteView = post.BlockView.extend({
       tpl: '#wp-quote',
     });
+
 
     // CODE CONTENT BLOCK
     post.codeView = post.BlockView.extend({
@@ -344,6 +342,7 @@
         console.log( this.model );
       }
     });
+
 
     // AUDIO CONTENT BLOCK
     post.audioView = post.BlockView.extend({
@@ -361,15 +360,18 @@
       }
     });
 
+
     // EMBED CONTENT BLOCK
     post.embedView = post.BlockView.extend({
       tpl: '#wp-embed',
     });
 
+
     // TWEET CONTENT BLOCK
     post.tweetView = post.BlockView.extend({
       tpl: '#wp-tweet',
     });
+
 
     // IMAGE CONTENT BLOCK
     post.imgView = post.BlockView.extend({
@@ -577,6 +579,7 @@
         this.$el.find('.drag-drop-area').removeClass('drag-over');
       }
     });
+
 
     // GALLERY CONTENT BLOCK ===========================================================================//
 
@@ -823,6 +826,7 @@
         this.$el.find('.drag-drop-area').removeClass('drag-over');
       }
     });
+
     
     // the post view =======================================================================//
 
@@ -890,6 +894,7 @@
           this.$postPlaceholder.remove();
         } else {
           this.$el.append( this.$postPlaceholderCopy );
+          this.$postPlaceholder = $( '#post-placeholder' );
         }
       },
       blockMenu: function(e){
@@ -942,6 +947,7 @@
 
     // initiate the content blocks view
     post.view = new post.View({ collection: post.blocks });
+
 
     // CONFIG ================================================================================================//
 
@@ -996,6 +1002,6 @@
       return true;
     }
 
-  });
+	});
 
 }(jQuery));

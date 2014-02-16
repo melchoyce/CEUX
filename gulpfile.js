@@ -6,6 +6,8 @@ var gulp = require( 'gulp' ),
 		rename = require( 'gulp-rename' ),
 		clean = require( 'gulp-clean' ),
 		concat = require( 'gulp-concat' );
+		header = require( 'gulp-header' ),
+		footer = require( 'gulp-footer' );
 
 // styles task
 gulp.task( 'styles', function() {
@@ -20,8 +22,46 @@ gulp.task( 'styles', function() {
 
 // scripts task
 gulp.task( 'scripts', function() {
-	return gulp.src( 'js/**/*.js' )
+
+	var customHeader = [
+		'(function ( $ ) {',
+		'"use strict";',
+		'',
+		'	$(function () {',
+		'',
+		''].join('\n');
+
+	var customFooter = [
+		'',
+		'',
+		'	});',
+		'',
+		'}(jQuery));'].join('\n');
+
+	// passa an array of files instead of a blob to make sure that the files will be concatenated in the correct order
+	var filesOrder = [
+		'js/src/post.main.js',
+		'js/src/post.Uploader.js',
+		'js/src/post.addBlockMenu.js',
+		'js/src/post.ParentView.js',
+		'js/src/post.textView.js',
+		'js/src/post.quoteView.js',
+		'js/src/post.codeView.js',
+		'js/src/post.audioView.js',
+		'js/src/post.videoView.js',
+		'js/src/post.embedView.js',
+		'js/src/post.tweetView.js',
+		'js/src/post.imgView.js',
+		'js/src/post.galleryView.js',
+		'js/src/post.View.js',
+		'js/src/misc.js',
+	];
+
+	return gulp.src( filesOrder )
 		.pipe( concat( 'main.js' ) )
+		.pipe( header( customHeader ) )
+		.pipe( footer( customFooter ) )
+		.pipe( gulp.dest( 'js' ) )
 		.pipe( rename({ suffix: '.min' }) )
 		.pipe( uglify() )
 		.pipe( gulp.dest( 'js' ) )
