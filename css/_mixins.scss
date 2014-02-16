@@ -14,7 +14,7 @@
 }
 
 @mixin opacity ($op){
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=${op})";
+	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$op})";
 	filter: alpha(opacity=$op);
 	opacity: $op/100;
 }
@@ -39,15 +39,15 @@
 @mixin font-size ($sizeValue) {
   $remValue: $sizeValue;
   $pxValue: $sizeValue * 10;
-  font-size: ($pxValue)px;
-  font-size: ($remValue)rem;
+  font-size: #{$pxValue}px;
+  font-size: #($remValue}rem;
 }
 
 @mixin line-height ($sizeValue) {
   $remValue: $sizeValue;
   $pxValue: $sizeValue * 10;
-  line-height: ($pxValue)px; 
-  line-height: ($remValue)rem;
+  line-height: #{$pxValue}px; 
+  line-height: #{$remValue}rem;
 }
 
 // The micro clearfix http://nicolasgallagher.com/micro-clearfix-hack/
