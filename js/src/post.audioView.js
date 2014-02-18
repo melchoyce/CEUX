@@ -18,9 +18,11 @@
       			url: $val
       		};
 
-      		$.get( ajaxurl, data ).done( function( html ){
-      			self.setAudio( html );
-      		} );
+  		this.model.set({ url: $val });
+
+  		$.get( ajaxurl, data ).done( function( html ){
+  			self.setAudio( html );
+  		} );
       },
       setAudio: function( html ){
       	this.$el.find('.wp-block').html( html );

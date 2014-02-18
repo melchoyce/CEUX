@@ -689,10 +689,10 @@ function cb_tweet_tpl(){ ?>
 }
 
 function cb_quote_tpl(){ ?>
-	<h2><span class="title-image dashicons dashicons-format-quote"></span><?php _e( 'Quote' ) ?></h2>
-	<textarea id="quote_<%= wp_id %>"><%= block_content %></textarea>
-	<input type="text" class="input quote-who" value="" placeholder="Who said that?">
-	<input type="text" class="input quote-where" value="" placeholder="Where did it was said?">
+	<span class="quote-bg dashicons dashicons-format-quote"></span>
+	<textarea id="quote_<%= wp_id %>" placeholder="<?php _e( 'Your quote here' ) ?>"><%= block_content %></textarea>
+	<input type="text" class="input quote-who" value="" placeholder="<?php _e( 'Who said that?' ) ?>">
+	<input type="text" class="input quote-where" value="" placeholder="<?php _e( 'Where did it was said?' ) ?>">
 <?php
 }
 

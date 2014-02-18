@@ -19,9 +19,11 @@
       			url: $val
       		};
 
-      		$.get( ajaxurl, data ).done( function( html ){
-      			self.setVideo( html );
-      		} );
+  		this.model.set({ url: $val });
+
+  		$.get( ajaxurl, data ).done( function( html ){
+  			self.setVideo( html );
+  		} );
       },
       setVideo: function( html ){
       	this.$el.find('.wp-block').html( html );
