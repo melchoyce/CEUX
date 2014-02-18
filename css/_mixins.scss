@@ -40,7 +40,7 @@
   $remValue: $sizeValue;
   $pxValue: $sizeValue * 10;
   font-size: #{$pxValue}px;
-  font-size: #($remValue}rem;
+  font-size: #{$remValue}rem;
 }
 
 @mixin line-height ($sizeValue) {

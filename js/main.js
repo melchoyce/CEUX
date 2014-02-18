@@ -328,10 +328,25 @@
     });
 
 
-    // QUOTE CONTENT BLOCK
-    post.quoteView = post.BlockView.extend({
-      tpl: '#wp-quote',
-    });
+	// QUOTE CONTENT BLOCK
+	post.quoteView = post.BlockView.extend({
+	  tpl: '#wp-quote',
+	  events: {
+		'keyup textarea' : 'resizeTextarea',
+	  },
+	  afterRender: function(){
+		// this.resizeTextarea();
+	  },
+	  resizeTextarea: function( $el ){
+
+	  	if( !this.$textarea ){
+			this.$textarea = $( '#quote_' + this.model.get( 'wp_id' ) );
+	  	}
+
+		this.$textarea.css({ 'height' : 'auto' });
+		this.$textarea.css({ 'height': this.$textarea.prop( 'scrollHeight' ) +'px' });
+	  }
+	});
 
 
     // CODE CONTENT BLOCK
@@ -347,16 +362,61 @@
     // AUDIO CONTENT BLOCK
     post.audioView = post.BlockView.extend({
       tpl: '#wp-audio',
+      events: {
+      	'click .oembed-fetch' : 'fetchAudio',
+      },
       init: function(){
-        console.log( this.model );
+      },
+      fetchAudio: function( e ){
+      	e.preventDefault();
+
+      	var self = this,
+      		$url = this.$el.find('.oembed-url'),
+      		$val = $url.val(),
+      		data = {
+      			action: 'fetch_cb_audio',
+      			url: $val
+      		};
+
+  		this.model.set({ url: $val });
+
+  		$.get( ajaxurl, data ).done( function( html ){
+  			self.setAudio( html );
+  		} );
+      },
+      setAudio: function( html ){
+      	this.$el.find('.wp-block').html( html );
       }
     });
 
     // VIDEO CONTENT BLOCK
     post.videoView = post.BlockView.extend({
       tpl: '#wp-video',
+      events: {
+      	'click .oembed-fetch' : 'fetchVideo',
+      },
       init: function(){
         console.log( this.model );
+      },
+      fetchVideo: function( e ){
+      	e.preventDefault();
+
+      	var self = this,
+      		$url = this.$el.find('.oembed-url'),
+      		$val = $url.val(),
+      		data = {
+      			action: 'fetch_cb_video',
+      			url: $val
+      		};
+
+  		this.model.set({ url: $val });
+
+  		$.get( ajaxurl, data ).done( function( html ){
+  			self.setVideo( html );
+  		} );
+      },
+      setVideo: function( html ){
+      	this.$el.find('.wp-block').html( html );
       }
     });
 
