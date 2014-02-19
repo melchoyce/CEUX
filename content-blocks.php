@@ -408,6 +408,7 @@ class WP_Content_Blocks {
 		$response = array(
 			'id' => $attach_id,
 			'link' => get_attachment_link( $attach_id ),
+			'caption' => $data['image_meta']['caption'],
 			'sizes' => array()
 		);
 
@@ -573,6 +574,7 @@ function cb_img_placeholder_tpl(){ ?>
 	</div>
 	<div class="wp-image-placeholder">
 		<img src="<%= url %>" id="<%= id %>" class="img-file alignnone">
+		<input type="text" class="img-caption" placeholder="<?php _e( 'Enter your caption here' ) ?>" value="<%= caption %>">
 	</div>
 <?php
 }

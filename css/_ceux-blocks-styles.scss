@@ -139,12 +139,19 @@
 	}
 }
 
-.wp-image .wp-image-placeholder{
-	width: 100%;
-	position: relative;
-	/* striped background texture */
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAANElEQVQIW2N89+7dfyEhIUYGJAASA3FRBEECMAkMSWQJkGlwnegScJ3YJMCSuCRQJLG5GABU3yNjtAVcewAAAABJRU5ErkJggg==) repeat;
-	@include clearfix;
+.wp-image {
+	.wp-image-placeholder{
+		width: 100%;
+		position: relative;
+		/* striped background texture */
+		background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAANElEQVQIW2N89+7dfyEhIUYGJAASA3FRBEECMAkMSWQJkGlwnegScJ3YJMCSuCRQJLG5GABU3yNjtAVcewAAAABJRU5ErkJggg==) repeat;
+		@include clearfix;
+	}
+	.img-caption{
+		width: 100%;
+		margin-top: 10px;
+		padding: 10px;
+	}
 }
 
 /* Gallery ==================================== */

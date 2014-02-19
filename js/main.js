@@ -562,7 +562,8 @@
 
           $placeholder.html( $imgTemplate({
             id: imgID,
-            url: self.getImgURL( attachment, 'full' )
+            url: self.getImgURL( attachment, 'full' ),
+            caption: attachment.caption
           }) );
 
       },
