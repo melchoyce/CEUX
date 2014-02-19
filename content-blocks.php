@@ -37,7 +37,7 @@ class WP_Content_Blocks {
 
 	private function __construct() {
 
-		$this->plugin_dir = WP_PLUGIN_URL . '/' . $this->plugin_slug;
+		$this->plugin_dir = plugin_dir_url( __FILE__ );
 
 		// initialize the plugin
 		add_action( 'admin_init', array( $this, 'init') );
@@ -57,8 +57,6 @@ class WP_Content_Blocks {
 		add_action( 'wp_ajax_fetch_cb_video', array( $this, 'cb_fetch_video') );
 		add_action( 'wp_ajax_fetch_cb_audio', array( $this, 'cb_fetch_audio') );
 
-		wp_oembed_add_provider( 'http://soundcloud.com/*', 'http://soundcloud.com/oembed' );
-
 	}
 
 	function init() {
@@ -73,39 +71,24 @@ class WP_Content_Blocks {
 
 	function enqueue_scripts(){
 		wp_register_script( 'tinymce_4', '//tinymce.cachefly.net/4.0/tinymce.min.js', null, '4.0', true );
-
-		$skin = array(
-			'CEUXskin' => plugin_dir_url( __FILE__ ) .'css/ceux-tinymce/'
-		);
-
-		wp_localize_script( 'tinymce_4', 'tinymce_vars', $skin );
-
-		$options = $this->get_plupload_instance();
-
-		// wp_register_script( 'post-CEUX',	$this->plugin_dir . '/js/post-ceux.js', array( 'tinymce_4'), self::VERSION, true );
-		wp_register_script( 'ceux-main-js',	$this->plugin_dir . '/js/main.js', array( 'backbone', 'jquery-ui-sortable'), self::VERSION, true );
-		wp_localize_script( 'ceux-main-js', 'ceux_plupload', $options );
+		wp_register_script( 'ceux-main-js',	$this->plugin_dir . 'js/main.js', array( 'backbone', 'jquery-ui-sortable'), self::VERSION, true );
 	}
 
 	function enqueue_styles(){
-		wp_register_style( 'ceux-style-css', $this->plugin_dir . '/css/style.css', array(), self::VERSION );
+		wp_register_style( 'ceux-style-css', $this->plugin_dir . 'css/style.css', array(), self::VERSION );
 	}
 
 	function print_scripts(){
 		global $pagenow;
 
 		if( get_post_type() == 'post' && ( $pagenow == 'post-new.php' || $pagenow == 'post.php' ) ){
-			// wp_deregister_script( 'tiny_mce' );
-			// wp_deregister_script( 'post' );
-			// wp_deregister_script( 'editorremov' );
-			// wp_deregister_script( 'editor-functions' );
+
+			$options = $this->get_plupload_instance();
+
 			wp_enqueue_script( 'tinymce_4' );				// tinyMCE 4
-			// wp_enqueue_script( 'post-CEUX' );				// replaces post.min.js, removing tinyMCE code that causes an error
-			// wp_enqueue_script( 'underscore' );
-			// wp_enqueue_script( 'backbone' );
-			// wp_enqueue_script( 'jquery-ui-sortable' );
-			// wp_enqueue_script( 'tiny_mce' );
 			wp_enqueue_script( 'ceux-main-js' );
+			wp_localize_script( 'ceux-main-js', 'ceux_plupload', $options );
+
 		}
 
 	}
