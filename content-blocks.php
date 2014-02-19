@@ -66,7 +66,6 @@ class WP_Content_Blocks {
 
 		// remove default post editor
 		remove_post_type_support( 'post', 'editor' );
-		// wp_enqueue_media();
 	}
 
 	function enqueue_scripts(){
@@ -254,7 +253,9 @@ class WP_Content_Blocks {
 	*
 	*/
 	function content_blocks_markup(){ 
-		global $post;
+		global $post, $pagenow, $typenow;
+
+		if( $typenow == 'post' && ( $pagenow == 'post-new.php' || $pagenow == 'post.php' ) ){
 ?>
 
 	<div id="postdivrich" class="postarea">
@@ -290,10 +291,10 @@ class WP_Content_Blocks {
 		</div>
 
 		<!-- templates for every content block -->
-		<?php //$this->edit_prototype() ?>
 		<?php $this->build_cb_templates() ?>
 
-	<?php
+	<?php 
+		}
 	}
 
 	function build_cb_templates(){
@@ -334,12 +335,8 @@ class WP_Content_Blocks {
 
 		$plupload_options = array(
 			'runtimes'            => 'html5,silverlight,flash,html4',
-			// 'browse_button'       => null,
-			// 'container'           => null,
-			// 'drop_element'        => null,
 			'file_data_name'      => 'ceux-upload',
 			'multiple_queues'     => false,
-			// 'multi_selection'	  => false,
 			'max_file_size'       => wp_max_upload_size().'b',
 			'url'                 => admin_url('admin-ajax.php'),
 			'flash_swf_url'       => includes_url('js/plupload/plupload.flash.swf'),
@@ -682,7 +679,10 @@ function cb_quote_tpl(){ ?>
 }
 
 function cb_embed_tpl(){ ?>
-	<h2><span class="title-image dashicons dashicons-welcome-add-page"></span>Insert your embed code here</h2>
-	<textarea class="input"><%= block_content %></textarea>
+	<textarea class="embed-text" placeholder="<?php _e( 'Insert your embed code here' ) ?>"><%= block_content %></textarea>
+	<div class="embed-placeholder">
+		<span class="edit"><span class="dashicons dashicons-edit"></span></span>
+		<div class="placeholder-icon"><span class="dashicons dashicons-welcome-add-page"></span></div>
+	</div>
 <?php
 }
