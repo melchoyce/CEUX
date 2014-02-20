@@ -535,7 +535,7 @@ function get_content_blocks() {
 // templates for each content block
 
 function cb_text_tpl(){ ?>
-	<div class="wp-block editable" id="text-<%= wp_id %>">
+	<div class="wp-block editable" id="text-<%= wp_id %>" placeholder="<?php _e( 'Type here...' ) ?>">
 		<%= block_content %>
 	</div>
 <?php
