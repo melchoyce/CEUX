@@ -7,7 +7,7 @@
       events: {
         'click #add-block' : 'blockMenu',
         'change #post-title': 'updateTitle',
-        'click #publish': 'savePost',
+        'update-sort': 'updateSort',
       },
 
       initialize: function(){
@@ -32,11 +32,16 @@
           // containment: '#container',
           connectWith: ".content-blocks",
           placeholder: "blocks-placeholder",
-          start: function(e, ui){
-            ui.placeholder.height(ui.item.outerHeight());
+          start: function( e, ui ){
+            ui.placeholder.height( ui.item.outerHeight() );
 
             // hide TinyMCE on drag
-            $('.mce-tinymce').hide();
+            $( '.mce-tinymce' ).hide();
+          },
+          stop: function( event, ui ) {
+            ui.item.trigger( 'drop', ui.item.index() );
+
+            console.log( ui.item.index() );
           }
         });
 
@@ -84,7 +89,8 @@
 
         var block = new post.Block({
           wp_id: 'block_' + this.counter,
-          type: objType
+          type: objType,
+          
         });
 
         // get view object
@@ -107,13 +113,21 @@
           var editable = block.find( '.editable' ).attr( 'id' );
           tinymce.execCommand( 'mceAddEditor', false, editable );
       },
-      savePost: function(){
+      updateSort: function( event, model, position ) {            
+        this.collection.remove( model );
 
-        console.log( post.blocks.toJSON() );
+        this.collection.each( function( model, index ) {
+            var ordinal = index;
+            if ( index >= position ){
+                ordinal += 1;
+            }
+            model.set( 'ordinal', ordinal );
+        });            
 
-        alert('Here we need to get all the data from post.Blocks collection, serialize it and save on the database. The post.Data model will hold the content when the post is loaded, then it should pass it to the post.Blocks collection to rebuild the content blocks.');
+        model.set( 'ordinal', position );
+
+        this.collection.add( model, {at: position} );
       },
-
     });
 
     // initiate the content blocks view

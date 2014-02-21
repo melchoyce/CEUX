@@ -126,11 +126,16 @@
               $placeholder = this.$el.find( $( '.' + this.blockType ) ),
               $imgTemplate = _.template( $('#image-placeholder' ).html() );
 
-          $placeholder.html( $imgTemplate({
-            id: imgID,
+          var content = {
+            imgID: imgID,
             url: self.getImgURL( attachment, 'full' ),
             caption: attachment.caption
-          }) );
+          };        
+
+          $placeholder.html( $imgTemplate( content ) );
+
+          // set model content
+          this.model.set( content );
 
       },
       getImgURL: function(obj, el){
@@ -156,33 +161,42 @@
           button.addClass( 'selected' );
 
           if( button.hasClass( 'size-thumbnail' ) ){ 
-            image.attr( 'src', this.imgSizes.thumbnail );
+            this.currentSize = this.imgSizes.thumbnail;
           } else if( button.hasClass( 'size-medium' ) ){          
-            image.attr( 'src', this.imgSizes.medium );
+            this.currentSize = this.imgSizes.medium;
           } else if( button.hasClass( 'size-full' ) ){
-            image.attr( 'src', this.imgSizes.full );
+            this.currentSize = this.imgSizes.full;
           }
+
+          image.attr( 'src', this.currentSize );
+
+          // set current image size
+          this.model.set({ url: this.currentSize });
 
         }
       },
-      imgAlign: function(e){
-        var button = $(e.currentTarget);
-        var image = this.$el.find('.img-file');
+      imgAlign: function( e ){
+        var button = $( e.currentTarget );
+        var image = this.$el.find( '.img-file' );
 
-        if(!button.hasClass('selected')){
+        if( !button.hasClass( 'selected' ) ){
 
-          this.$el.find('.opt-align').removeClass('selected');
-          button.addClass('selected');
+          this.$el.find( '.opt-align' ).removeClass( 'selected' );
+          button.addClass( 'selected' );
 
-          if(button.hasClass('align-left')){ 
-            image.attr('class', 'img-file alignleft');
-          } else if(button.hasClass('align-center')){          
-            image.attr('class', 'img-file aligncenter');
-          } else if(button.hasClass('align-right')){
-            image.attr('class', 'img-file alignright');
+          if( button.hasClass( 'align-left' ) ){ 
+            this.currentAlign = 'alignleft';
+          } else if( button.hasClass( 'align-center' ) ){          
+            this.currentAlign = 'aligncenter';
+          } else if( button.hasClass( 'align-right' ) ){
+            this.currentAlign = 'alignright';
           } else{
-            image.attr('class', 'img-file alignone');
-          }
+            this.currentAlign = 'alignone';
+          } 
+          image.attr( 'class', 'img-file ' + this.currentAlign );
+
+          // set current image align class
+          this.model.set({ align: this.currentAlign });
 
         }
       },

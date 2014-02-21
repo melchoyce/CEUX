@@ -507,12 +507,12 @@ function register_content_block_view( $slug, $callback, $is_main, $view ){ ?>
 	<script type="text/template" id="<?php echo $slug ?>">
 	<?php if( $is_main ): ?>
 		<ul class="ctrlbar">
-			<% if(move){ %> <li class="move" title="<?php _e( 'Drag Content Block' ) ?>"><span class="dashicons dashicons-tinymce-justify"></span></li> <% } %>
+			<li class="move" title="<?php _e( 'Drag Content Block' ) ?>"><span class="dashicons dashicons-tinymce-justify"></span></li>
 			<li class="move-up" title="<?php _e( 'Move Up' ) ?>"><span class="dashicons dashicons-arr-up"></span></li>
 			<li class="move-down" title="<?php _e( 'Move Down' ) ?>"><span class="dashicons dashicons-arr-down"></span></li>
 		</ul>
 
-		<% if(remove){ %><div class="remove" title="<?php _e( 'Remove Content Block' ) ?>"><span class="dashicons dashicons-no"></span></div><% } %>
+		<div class="remove" title="<?php _e( 'Remove Content Block' ) ?>"><span class="dashicons dashicons-no"></span></div>
 
 		<div id="<%= wp_id %>" class="<%= block_type %>" data-view="<?php echo $view ?>">
 			<?php call_user_func( $callback ) //insert block template markup here ?>
@@ -570,7 +570,7 @@ function cb_img_placeholder_tpl(){ ?>
 		</ul>
 	</div>
 	<div class="wp-image-placeholder">
-		<img src="<%= url %>" id="<%= id %>" class="img-file alignnone">
+		<img src="<%= url %>" id="<%= imgID %>" class="img-file alignnone">
 		<input type="text" class="img-caption" placeholder="<?php _e( 'Enter your caption here' ) ?>" value="<%= caption %>">
 	</div>
 <?php

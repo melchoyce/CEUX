@@ -3,7 +3,6 @@
 
     // TinyMCE config
     tinymce.init({
-      // skin_url: tinymce_vars.CEUXskin,
       selector: ".editable",
       add_unload_trigger: false,
       schema: "html5",
@@ -11,7 +10,18 @@
       fixed_toolbar_container: "#wp-editor-toolbar",
       menubar: false,
       toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-      statusbar: false
+      statusbar: false,
+      setup : function( ed ) {
+        ed.on('blur', function(e) {
+            // get the current model id and content
+            var $id = e.target.id.replace('text-',''),
+                $content = tinyMCE.get( e.target.id ).getContent();
+
+            // set new model content by model id
+            post.blocks.findWhere({ wp_id: $id }).set({ block_content: $content });
+        });
+
+      }
     });
 
     $('#add-block').on('click', function(e){
@@ -19,6 +29,13 @@
 
         $('#blocksSelect').toggleClass( 'active' );
     });
+
+    // get post content
+    $('#publish').on( 'click', function(e){
+      e.preventDefault();
+      console.log( post.blocks.toJSON() );
+      alert( 'check your console to view the array of content blocks ordered and with atributes' );
+    } );
 
 
     // sticky toolbar at the top

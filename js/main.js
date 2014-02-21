@@ -227,8 +227,6 @@
     post.Block = Backbone.Model.extend({
       defaults: {
         wp_id: 0,
-        remove: true,
-        move: true,
       }
     });
 
@@ -250,6 +248,7 @@
         'click .remove' : 'destroy',
         'click .move-up' : 'moveUp',
         'click .move-down' : 'moveDown',
+        'drop' : 'dropView',
       },
 
       init: function(){ 
@@ -286,16 +285,14 @@
       },
       render: function(){
 
-        this.$el.html(this.template(
+        this.$el.html( this.template(
           {
-            wp_id: this.model.get('wp_id'),
-            block_type: this.model.get('type'),
-            block_content: this.model.get('body'),
-            remove: this.model.get('remove'),
-            move: this.model.get('move'),
+            wp_id: this.model.get( 'wp_id' ),
+            block_type: this.model.get( 'type' ),
+            block_content: this.model.get( 'body' ),
             editable: this.isEditable
           }
-        ));
+        ) );
 
         return this;
       },
@@ -305,16 +302,19 @@
       destroy: function(){
         this.model.destroy();
       },
-      moveUp: function(e){
-        var current = $(e.currentTarget).parents('.content-block');
-        var prev = current.prev('.content-block');
-        prev.insertAfter(current);
+      moveUp: function( e ){
+        var current = $( e.currentTarget ).parents( '.content-block' );
+        var prev = current.prev( '.content-block' );
+        prev.insertAfter( current );
       },
-      moveDown: function(e){
-        var current = $(e.currentTarget).parents('.content-block');
-        var prev = current.next('.content-block');
-        prev.insertBefore(current);
+      moveDown: function( e ){
+        var current = $( e.currentTarget ).parents( '.content-block' );
+        var prev = current.next( '.content-block' );
+        prev.insertBefore( current );
       },
+      dropView: function( event, index ){
+        this.$el.trigger( 'update-sort', [this.model, index] );
+      }
     });    
 
 
@@ -588,11 +588,16 @@
               $placeholder = this.$el.find( $( '.' + this.blockType ) ),
               $imgTemplate = _.template( $('#image-placeholder' ).html() );
 
-          $placeholder.html( $imgTemplate({
-            id: imgID,
+          var content = {
+            imgID: imgID,
             url: self.getImgURL( attachment, 'full' ),
             caption: attachment.caption
-          }) );
+          };        
+
+          $placeholder.html( $imgTemplate( content ) );
+
+          // set model content
+          this.model.set( content );
 
       },
       getImgURL: function(obj, el){
@@ -618,33 +623,42 @@
           button.addClass( 'selected' );
 
           if( button.hasClass( 'size-thumbnail' ) ){ 
-            image.attr( 'src', this.imgSizes.thumbnail );
+            this.currentSize = this.imgSizes.thumbnail;
           } else if( button.hasClass( 'size-medium' ) ){          
-            image.attr( 'src', this.imgSizes.medium );
+            this.currentSize = this.imgSizes.medium;
           } else if( button.hasClass( 'size-full' ) ){
-            image.attr( 'src', this.imgSizes.full );
+            this.currentSize = this.imgSizes.full;
           }
+
+          image.attr( 'src', this.currentSize );
+
+          // set current image size
+          this.model.set({ url: this.currentSize });
 
         }
       },
-      imgAlign: function(e){
-        var button = $(e.currentTarget);
-        var image = this.$el.find('.img-file');
+      imgAlign: function( e ){
+        var button = $( e.currentTarget );
+        var image = this.$el.find( '.img-file' );
 
-        if(!button.hasClass('selected')){
+        if( !button.hasClass( 'selected' ) ){
 
-          this.$el.find('.opt-align').removeClass('selected');
-          button.addClass('selected');
+          this.$el.find( '.opt-align' ).removeClass( 'selected' );
+          button.addClass( 'selected' );
 
-          if(button.hasClass('align-left')){ 
-            image.attr('class', 'img-file alignleft');
-          } else if(button.hasClass('align-center')){          
-            image.attr('class', 'img-file aligncenter');
-          } else if(button.hasClass('align-right')){
-            image.attr('class', 'img-file alignright');
+          if( button.hasClass( 'align-left' ) ){ 
+            this.currentAlign = 'alignleft';
+          } else if( button.hasClass( 'align-center' ) ){          
+            this.currentAlign = 'aligncenter';
+          } else if( button.hasClass( 'align-right' ) ){
+            this.currentAlign = 'alignright';
           } else{
-            image.attr('class', 'img-file alignone');
-          }
+            this.currentAlign = 'alignone';
+          } 
+          image.attr( 'class', 'img-file ' + this.currentAlign );
+
+          // set current image align class
+          this.model.set({ align: this.currentAlign });
 
         }
       },
@@ -925,7 +939,7 @@
       events: {
         'click #add-block' : 'blockMenu',
         'change #post-title': 'updateTitle',
-        'click #publish': 'savePost',
+        'update-sort': 'updateSort',
       },
 
       initialize: function(){
@@ -950,11 +964,16 @@
           // containment: '#container',
           connectWith: ".content-blocks",
           placeholder: "blocks-placeholder",
-          start: function(e, ui){
-            ui.placeholder.height(ui.item.outerHeight());
+          start: function( e, ui ){
+            ui.placeholder.height( ui.item.outerHeight() );
 
             // hide TinyMCE on drag
-            $('.mce-tinymce').hide();
+            $( '.mce-tinymce' ).hide();
+          },
+          stop: function( event, ui ) {
+            ui.item.trigger( 'drop', ui.item.index() );
+
+            console.log( ui.item.index() );
           }
         });
 
@@ -1002,7 +1021,8 @@
 
         var block = new post.Block({
           wp_id: 'block_' + this.counter,
-          type: objType
+          type: objType,
+          
         });
 
         // get view object
@@ -1025,13 +1045,21 @@
           var editable = block.find( '.editable' ).attr( 'id' );
           tinymce.execCommand( 'mceAddEditor', false, editable );
       },
-      savePost: function(){
+      updateSort: function( event, model, position ) {            
+        this.collection.remove( model );
 
-        console.log( post.blocks.toJSON() );
+        this.collection.each( function( model, index ) {
+            var ordinal = index;
+            if ( index >= position ){
+                ordinal += 1;
+            }
+            model.set( 'ordinal', ordinal );
+        });            
 
-        alert('Here we need to get all the data from post.Blocks collection, serialize it and save on the database. The post.Data model will hold the content when the post is loaded, then it should pass it to the post.Blocks collection to rebuild the content blocks.');
+        model.set( 'ordinal', position );
+
+        this.collection.add( model, {at: position} );
       },
-
     });
 
     // initiate the content blocks view
@@ -1042,7 +1070,6 @@
 
     // TinyMCE config
     tinymce.init({
-      // skin_url: tinymce_vars.CEUXskin,
       selector: ".editable",
       add_unload_trigger: false,
       schema: "html5",
@@ -1050,7 +1077,18 @@
       fixed_toolbar_container: "#wp-editor-toolbar",
       menubar: false,
       toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-      statusbar: false
+      statusbar: false,
+      setup : function( ed ) {
+        ed.on('blur', function(e) {
+            // get the current model id and content
+            var $id = e.target.id.replace('text-',''),
+                $content = tinyMCE.get( e.target.id ).getContent();
+
+            // set new model content by model id
+            post.blocks.findWhere({ wp_id: $id }).set({ block_content: $content });
+        });
+
+      }
     });
 
     $('#add-block').on('click', function(e){
@@ -1058,6 +1096,13 @@
 
         $('#blocksSelect').toggleClass( 'active' );
     });
+
+    // get post content
+    $('#publish').on( 'click', function(e){
+      e.preventDefault();
+      console.log( post.blocks.toJSON() );
+      alert( 'check your console to view the array of content blocks ordered and with atributes' );
+    } );
 
 
     // sticky toolbar at the top
