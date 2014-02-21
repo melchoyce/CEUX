@@ -3,8 +3,6 @@
     post.Block = Backbone.Model.extend({
       defaults: {
         wp_id: 0,
-        remove: true,
-        move: true,
       }
     });
 
@@ -26,6 +24,7 @@
         'click .remove' : 'destroy',
         'click .move-up' : 'moveUp',
         'click .move-down' : 'moveDown',
+        'drop' : 'dropView',
       },
 
       init: function(){ 
@@ -62,16 +61,14 @@
       },
       render: function(){
 
-        this.$el.html(this.template(
+        this.$el.html( this.template(
           {
-            wp_id: this.model.get('wp_id'),
-            block_type: this.model.get('type'),
-            block_content: this.model.get('body'),
-            remove: this.model.get('remove'),
-            move: this.model.get('move'),
+            wp_id: this.model.get( 'wp_id' ),
+            block_type: this.model.get( 'type' ),
+            block_content: this.model.get( 'body' ),
             editable: this.isEditable
           }
-        ));
+        ) );
 
         return this;
       },
@@ -81,16 +78,19 @@
       destroy: function(){
         this.model.destroy();
       },
-      moveUp: function(e){
-        var current = $(e.currentTarget).parents('.content-block');
-        var prev = current.prev('.content-block');
-        prev.insertAfter(current);
+      moveUp: function( e ){
+        var current = $( e.currentTarget ).parents( '.content-block' );
+        var prev = current.prev( '.content-block' );
+        prev.insertAfter( current );
       },
-      moveDown: function(e){
-        var current = $(e.currentTarget).parents('.content-block');
-        var prev = current.next('.content-block');
-        prev.insertBefore(current);
+      moveDown: function( e ){
+        var current = $( e.currentTarget ).parents( '.content-block' );
+        var prev = current.next( '.content-block' );
+        prev.insertBefore( current );
       },
+      dropView: function( event, index ){
+        this.$el.trigger( 'update-sort', [this.model, index] );
+      }
     });    
 
 
