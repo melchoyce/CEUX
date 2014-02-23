@@ -54,9 +54,7 @@ class WP_Content_Blocks {
 		add_action( 'wp_ajax_get_content_blocks', array( $this, 'get_content_blocks_coll') );
 		add_action( 'wp_ajax_get_cb_button_tpl', array( $this, 'blocks_button_tpl') );
 		add_action( 'wp_ajax_ceux_upload_image', array( $this, 'cb_upload_image') );
-		add_action( 'wp_ajax_fetch_cb_video', array( $this, 'cb_fetch_video') );
-		add_action( 'wp_ajax_fetch_cb_audio', array( $this, 'cb_fetch_audio') );
-
+		add_action( 'wp_ajax_fetch_cb_oembed', array( $this, 'cb_fetch_oembed') );
 	}
 
 	function init() {
@@ -162,6 +160,13 @@ class WP_Content_Blocks {
 			'view' => 'audioView',
 		), 'cb_audio_tpl', true );
 
+		// additional subview for audio content block
+		$wp_content_blocks_tpl[] = array( 
+			'slug' => 'audio-placeholder-tpl', 
+			'callback' => 'cb_audio_placeholder_tpl', 
+			'is_main' => false 
+		);
+
 		// video
 		register_content_block( array(
 			'name' => __( 'Video' ),
@@ -169,6 +174,13 @@ class WP_Content_Blocks {
 			'icon' => 'dashicons-format-video',
 			'view' => 'videoView',
 		), 'cb_video_tpl', true );
+
+		// additional subview for video content block
+		$wp_content_blocks_tpl[] = array( 
+			'slug' => 'video-placeholder-tpl', 
+			'callback' => 'cb_video_placeholder_tpl', 
+			'is_main' => false 
+		);
 
 		// Quote
 		register_content_block( array(
@@ -433,18 +445,37 @@ class WP_Content_Blocks {
 		wp_send_json( $response );
 	}
 
-	// fetch video
-	function cb_fetch_video(){
+	// fetch oEmbed
+	function cb_fetch_oembed(){
 		$url = $_REQUEST['url'];
-		$response .= '<div class="videoWrapper">'. wp_oembed_get( $url, array( 'width' => 800 ) ) .'</div>';
-		die( $response );
+		$media = $_REQUEST['media'];
+
+		$response = array();
+
+		switch ( $media ) {
+			case 'video':
+				$response['thumb'] = $this->get_video_thumb( $url );
+				$response['html'] = '<div class="videoWrapper">'. wp_oembed_get( $url ) .'</div>';
+				break;
+			case 'audio':
+				$response['html'] = '<div class="audioWrapper">'. wp_oembed_get( $url ) .'</div>';
+				break;
+		}
+
+		wp_send_json( $response );
 	}
 
-	// fetch audio
-	function cb_fetch_audio(){
-		$url = $_REQUEST['url'];
-		$response .= '<div class="audioWrapper">'. wp_oembed_get( $url ) .'</div>';
-		die( $response );
+	// check if is youtube or vimeo, probably it will need to be adapted to the rest of providers
+	function get_video_thumb( $url ){
+
+	    $url = parse_url( $url );
+	    if( $url['host'] == 'www.youtube.com' || $url['host'] == 'youtube.com' ){
+	        $array = explode( "&", $url['query'] );
+	        return "http://img.youtube.com/vi/" . substr( $array[0], 2 ) . "/0.jpg";
+	    } else if( $url['host'] == 'www.vimeo.com' || $url['host'] == 'vimeo.com' ){
+	        $hash = json_decode( file_get_contents( "http://vimeo.com/api/v2/video/" . substr( $url['path'], 1 ). ".json") );
+	        return $hash[0]->thumbnail_large;
+	    } 
 	}
 
 }
@@ -624,33 +655,55 @@ function cb_gallery_img_tpl(){ ?>
 }
 
 function cb_audio_tpl(){ ?>
-	<div class="wp-block">
-		<a href="#" class="open-modal">
+	<div class="wp-block drag-drop" id="wp-audio-ui-<%= wp_id %>">
+		<div class="drag-drop-area supports-drag-drop" id="wp-drag-drop-<%= wp_id %>">
+			<a href="#" class="open-modal">
+				<span class="dashicons dashicons-format-audio"></span>
+				<span class="label"><?php _e( 'Drop an audio file here to upload or click to add' ); ?></span>
+			</a>	
+			<p><?php _e( 'Or, enter a video URL from your favorite audio sharing service below:' ) ?></p>
+			<div class="embed-wrapper">
+				<input type="text" class="oembed-url" value="" placeholder="Paste an audio url into here">
+				<button class="button oembed-fetch"><?php _e( 'Fetch Audio' ); ?></button></p>
+			</div>
+		</div>
+	</div>
+<?php
+}
+
+function cb_audio_placeholder_tpl(){ ?>
+	<div class="audio-placeholder">
+		<div class="audio-preview" title="<?php _e( 'Click to preview' ) ?>">
+			<span class="audio-remove"><span class="dashicons dashicons-no" title="<?php _e( 'Remove audio' ) ?>"></span></span>
 			<span class="dashicons dashicons-format-audio"></span>
-			<span class="label"><?php _e( 'Click here to upload or add an audio file' ); ?></span>
-		</a>	
-		<p><?php _e( 'Or, enter a video URL from your favorite audio sharing service below:' ) ?></p>
-		<p>
-		<div class="embed-wrapper">
-			<input type="text" class="oembed-url" value="" placeholder="Paste an audio url into here">
-			<button class="button oembed-fetch"><?php _e( 'Fetch Audio' ); ?></button></p>
+			<p><?php _e( 'Click to preview' ) ?></p>
 		</div>
 	</div>
 <?php
 }
 
 function cb_video_tpl(){ ?>
-	<div class="wp-block">
-		<a href="#" class="open-modal">
-			<span class="dashicons dashicons-format-video"></span>
-			<span class="label"><?php _e( 'Click here to upload or add a video file' ); ?></span>
-		</a>	
-		<p><?php _e( 'Or, enter a video URL from your favorite video sharing service below:' ) ?></p>
-		<p>
-		<div class="embed-wrapper">
-			<input type="text" class="oembed-url" value="" placeholder="<?php _e( 'Paste a video url here' ) ?>">
-			<button class="button oembed-fetch"><?php _e( 'Fetch Video' ); ?></button></p>
+	<div class="wp-block drag-drop" id="wp-video-ui-<%= wp_id %>">
+		<div class="drag-drop-area supports-drag-drop" id="wp-drag-drop-<%= wp_id %>">
+			<a href="#" class="open-modal">
+				<span class="dashicons dashicons-format-video"></span>
+				<span class="label"><?php _e( 'Drop a video file here to upload or click to add' ); ?></span>
+			</a>	
+			<p><?php _e( 'Or, enter a video URL from your favorite video sharing service below:' ) ?></p>
+			<div class="embed-wrapper">
+				<input type="text" class="oembed-url" value="" placeholder="<?php _e( 'Paste a video url here' ) ?>">
+				<button class="button oembed-fetch"><?php _e( 'Fetch Video' ); ?></button></p>
+			</div>
 		</div>
+	</div>
+<?php
+}
+
+function cb_video_placeholder_tpl(){ ?>
+	<div class="video-placeholder">
+		<span class="video-remove"><span class="dashicons dashicons-no" title="<?php _e( 'Remove video' ) ?>"></span></span>
+		<button class="video-preview" title="<?php _e( 'Click to preview' ) ?>"><span class="dashicons dashicons-arrow-right"></span></button>
+		<img src="<%= url %>">		
 	</div>
 <?php
 }
