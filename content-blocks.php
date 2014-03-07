@@ -313,7 +313,10 @@ class WP_Content_Blocks {
 		global $wp_content_blocks_tpl;
 
 		foreach( $wp_content_blocks_tpl  as $cb_tpl){
-			register_content_block_view( $cb_tpl['slug'], $cb_tpl['callback'], $cb_tpl['is_main'], $cb_tpl['view'] );
+
+			$view = isset( $cb_tpl['view'] ) ? $cb_tpl['view'] : null;
+
+			register_content_block_view( $cb_tpl['slug'], $cb_tpl['callback'], $cb_tpl['is_main'], $view );
 		}
 	}
 
@@ -502,7 +505,8 @@ function register_content_block_group( $slug, $args ) {
  */
 function register_content_block( $args, $template, $is_main ) {
 
-	global $wp_content_blocks, $wp_content_blocks_tpl;
+	global $wp_content_blocks;
+	global $wp_content_blocks_tpl;
 
 	$defaults = array(
 		'name' => '',						// block label
@@ -545,7 +549,9 @@ function register_content_block_view( $slug, $callback, $is_main, $view ){ ?>
 
 		<div class="remove" title="<?php _e( 'Remove Content Block' ) ?>"><span class="dashicons dashicons-no"></span></div>
 
-		<div id="<%= wp_id %>" class="<%= block_type %>" data-view="<?php echo $view ?>">
+		<?php $data_view = $view ? 'data-view="'. $view .'"' : '' ?>
+
+		<div id="<%= wp_id %>" class="<%= block_type %>" <?php echo $data_view ?>>
 			<?php call_user_func( $callback ) //insert block template markup here ?>
 		</div>
 
